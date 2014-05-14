@@ -29,41 +29,64 @@
     },
 
     /**
-     * Get and render racing news from ESPN Sport News.
-     * Getting data with async call and wait for data, then render it to DOM or
-     * returned as objects.
-     *
-     * TODO: Return object, and test returned data in another plugin.
+     * Render sport news from ESPN.
+     * The news are refactored and appended to the DOM.
      */
-    renderNews: function() {
+    renderSportNews: function() {
       var obj = this,
-        wrapper = $('<ul />', {'class': 'wrapper'});
+        thisData,
+        news = new Array(),
+        getUrl = '',
+        wrapper = $('<ul />', {'class': 'wrapper'});;
 
-      console.log('renderNews');
+      // Get data fron Ajax call.
+      getUrl = this.options.view + 'sports/news/?limit=10&apikey=' + this.options.apiKey;
+      thisData = obj._getData(getUrl);
 
-      // JSON call to ESPN Developer API.
-      var jsonCall = $.ajax({
-        dataType: 'json',
+      // Wait for data.
+      $.when(thisData).done(function(data) {
+
+        // Refactor data.
+        $.each(data.headlines, function(i, item) {
+          news.push({
+            'id': item.id,
+            'title': item.headline
+          });
+        });
+
+        // Render refactored data.
+        $.each(news, function(i ,item) {
+
+          var item = $('<li />', {'class': 'item item-'+i}).text(item.title).appendTo(wrapper);
+
+        });
+
+        // Append data to DOM.
+        $(obj.element).append(wrapper);
+
+      });
+    },
+
+    /**
+     * Get data with Ajax call.
+     * The call is returned, so you can listen for event handlers.
+     *
+     * @param getUrl - URL to JSOB feed.
+     * @return get - Ajax call.
+     */
+    _getData: function(getUrl) {
+
+      var get = $.ajax({
+        url: getUrl,
+        dataType: 'jsonp',
         type: 'get',
         cache: false,
-        url: this.options.view + 'sports/racing/news/?limit=10&apikey=' + this.options.apiKey
-      }).done(function(data) {
-        return data;
-      }).fail(function(msg) {
-        return false;
+        timeout: 2000
       });
 
-      // Perform call and loop through data.
-      $.when(jsonCall).done(function(data) {
-        $.each(data.headlines, function(i, element) {
-          // Append headlines into DOM.
-          var item = $('<li />', {'class': 'item'}).text(element.headline).appendTo(wrapper);
-        });
-      });
+      return get;
 
-      // Append list to DOM.
-      $(obj.element).append(wrapper);
-    }
+    },
 
   };
 

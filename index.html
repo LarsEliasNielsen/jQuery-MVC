@@ -13,7 +13,7 @@
   <meta name="description" content="jQuery MVC">
   <meta name="viewport" content="width=device-width">
   <script src="js/vendor/jquery-1.10.2.min.js"></script>
-  <script src="js/jquery.mvc2.js"></script>
+  <script src="js/jquery.mvc.js"></script>
 </head>
 
 <body>
@@ -21,21 +21,7 @@
   <div id="output"></div>
   <script>
     jQuery(document).ready(function() {
-      $("#output").jQueryMVC('renderNews');
-
-      // $.ajax({
-      //   dataType: 'json',
-      //   type: 'get',
-      //   cache: false,
-      //   url: 'http://api.espn.com/v1/sports/racing/news/?limit=100&apikey=c2r8pwhm99ufremsdktspvre'
-      // }).done(function(data) {
-      //   console.log('done');
-      //   $.each(data, function(index, element) {
-      //     console.log(element);
-      //   });
-      // }).fail(function() {
-      //   console.log('fail');
-      // });
+      $('#output').jQueryMVC('renderSportNews');
     });
   </script>
 </body>
